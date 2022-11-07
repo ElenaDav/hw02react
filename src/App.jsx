@@ -8,36 +8,30 @@ function App() {
   const [messageList, setMessageList] = useState([])
   // В нем хранить массив объектов - сообщений (объект должен содержать,
   // как минимум, поля text и author). Начальное значение - пустой массив)
-  const [messageBody, setMessageBody] = useState({
-    text: '',
-    author: '',
-  })
 
+  const addMessage = (newMessage) => {
+    setMessageList((prevMessageList) => [...prevMessageList, newMessage])
+  }
   const botAnswer = 'Your message was sent by robot'
 
   useEffect(() => {
-    if (messageList.length > 0) {
+    if (
+      messageList.length > 0 &&
+      messageList[messageList.length - 1].author === 'user'
+    ) {
       setTimeout(() => {
-        setMessageList((prevstate) => [...prevstate, { text: botAnswer }])
+        addMessage({
+          author: 'BOT',
+          text: botAnswer,
+        })
       }, 1000)
     }
   }, [messageList])
 
   return (
     <div className="App">
-      <Form
-        date={messageBody}
-        setDate={setMessageBody}
-        setMessage={setMessageList}
-      >
-        {' '}
-      </Form>
-      <div>
-        {/* Рендерить список сообщений через map */}
-        {messageList.map((item, index) => (
-          <Message text={item.text} author={item.author} key={index} />
-        ))}
-      </div>
+      <Form addMessage={addMessage} />
+      <Message messages={messageList} />
     </div>
   )
 }
